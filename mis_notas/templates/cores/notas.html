@@ -1,0 +1,60 @@
+{% extends "cores/base.html" %}
+{% block content %}
+    <div class="container">
+        <h1 class="text-center">¡Simulador de Post it!</h1>
+        <div class="container xl">
+            <form action="{% url 'create' %}" method="post">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input class="input form-control m-2" type="text" placeholder="Título" name="title"/>
+                    <input class="input form-control m-2" type="text" placeholder="Descripción" name="description"/>
+                    <div class="form-check m-2">
+                        <input class="form-check-input" type="checkbox" name="is_important" />
+                        <label class="form-check-label">
+                            ¡Importante!
+                        </label>
+                    </div>
+                    <button class="btn btn-dark m-2">Agregar</button>
+                </div>
+            </form>
+        </div>        
+        {% if notes %}
+        <div class="container">
+            <div class="container xl d-flex flex-wrap">
+                {% for note in notes %}
+                    {% if note.is_important %}
+                    <!--Esto es una nota importante-->
+                    <div class="note p-3 m-3 important">
+                        <div class="note-header d-flex justify-content-between">
+                            <h3>{{ note.title }}</h3>
+                            <form action="{% url 'deletes' note.title %}" method="post">
+                                {% csrf_token %}
+                                <button class="btn"><i class="bi bi-x"></i></button>
+                            </form>
+                        </div>
+                        <p>{{ note.description }}</p>
+                    </div>
+                    {% else %}
+                    <!--Esto es una nota normal-->
+                    <div class="note p-3 m-3">
+                        <div class="note-header d-flex justify-content-between">
+                            <h3>{{ note.title }}</h3>
+                            <form action="{% url 'deletes' note.title %}" method="post">
+                                {% csrf_token %}
+                                <button class="btn"><i class="bi bi-x"></i></button>
+                            </form>
+                        </div>
+                        <p>{{ note.description }}</p>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <!-- Mensaje cuando no hay notas -->
+        <div class="container text-center mt-4">
+            <h2>Lista vacía</h2>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}
